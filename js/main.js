@@ -3,8 +3,10 @@ function setup(){
   createCanvas(windowWidth,windowHeight);
   stroke(0);
   background(200);
-  var img=loadImage("../img/私財.png");
-  image(img,10,10);
+  var mineimg=loadImage("../image/私財.png");
+  var taximg=loadImage("../image/税金.png");
+  image(mineimg,10,10);
+  image(taximg,110,110);
 }
 function touchMoved(){
   line(touchX,touchY,ptouchX,ptouchY);
