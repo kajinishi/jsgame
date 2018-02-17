@@ -29,7 +29,7 @@
     var nowturn=Number(1),nowplay=Number(0);
     var intax=[], inmine=[], totalnum=[],taxtotal=0;
   </script>
-  <div style="background-color:silver; width:320px;height:640px;margin:0px;position:relative;">
+  <div style="background-color:silver; width:380px;height:610px;margin:0px;position:relative;">
     <!-- ↓遊ぶ前の設定 -->
     <div style="background-color:orange;height:150px;padding:5px;top:40%;left:20%;position:absolute;" id="playset">
       ①何人で遊ぶ？
@@ -132,7 +132,7 @@
       var num=0;
       function stax(np){
         var sn="intax"+String(np);
-        document.write('<div id='+np+' >プレイヤー'+Number(np+1)+': <select name='+sn+'>');
+        document.write('<div id='+np+' style="margin:10px;">プレイヤー'+Number(np+1)+': <select name='+sn+'>');
             var def=Number(Math.round(Math.random()*Number(5)));//0~5
             for(var i=0;i<=5;i++){
               var defu="";
@@ -141,23 +141,24 @@
             }
         document.write('</select>枚納税');
         //↑表示
-        document.write('<font class="btn" id="decide'+np+'">決定</font></div>');
+        document.write('<font style="background: #51cc4a;color:black;border-radius:4px;margin:10px;padding:3px;" id="decide'+np+'">決定</font></div>');
         $("#decide"+np).click(function(){
           $("#"+np).hide();
           console.log(np+"番目:"+$("[name="+sn+"]").val());
           taxtotal+=$("[name="+sn+"]").val();//税金の枚数足す
           totalnum[np]+=5-$("[name="+sn+"]").val();//私財に横領
-          alert("別のプレイヤーに交代してください");
+          alert("このウィンドウを閉じた後、\n別のプレイヤーに交代してください");
           // return $("[name="+sn+"]").val();
           num++;
           return 1;
         });
       }
       function gstart(pnum,tnum,nturn){
-        document.write('<div style="background-color:silver; width:320px;height:640px;margin:0px;position:relative;">');
+        document.write('<div style="background-color:silver; width:380px;height:640px;margin:0px;position:relative;">');
         document.write('<h1 style="text-align:center;width:100%;background-color:rgba(255, 255, 255, 0.5);">投資'+nturn+'ターン目</h1>');
-        document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br><br>');
-        for(var np=0;np<=pnum;np++){
+        document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br>');
+        document.write('一度決定を押すと取り消せないので注意<br>');
+        for(var np=0;np<pnum;np++){
           if(nturn==1){totalnum[np]=0;}
           stax(np);
           // var addtax=selecttax(np);
