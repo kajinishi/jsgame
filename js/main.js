@@ -5,8 +5,8 @@ function setup(){
   background(200);
   var mineimg=loadImage("../image/mine.png");
   var taximg=loadImage("../image/tax.png");
-  image(mineimg,10,10);
-  image(taximg,110,110);
+  image(mineimg,100,100);
+  image(taximg,windowWidth/2,windowHeight/2);
   text("公共財ゲーム",windowWidth/2,windowHeight/2);
 }
 function touchMoved(){
