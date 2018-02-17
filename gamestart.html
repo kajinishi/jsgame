@@ -29,7 +29,7 @@
     var nowturn=Number(1),nowplay=Number(0);
     var intax=[], inmine=[], totalnum=[],taxtotal=0;
   </script>
-  <div style="background-color:silver; width:380px;height:610px;margin:0px;position:relative;">
+  <div style="background-color:silver; width:380px;height:600px;margin:0px;position:relative;">
     <!-- ↓遊ぶ前の設定 -->
     <div style="background-color:orange;height:150px;padding:5px;top:40%;left:20%;position:absolute;" id="playset">
       ①何人で遊ぶ？
@@ -58,7 +58,6 @@
     var selected="false";
     function startcheck(){
       pnum=$('[name=playnum]').val(), tnum=$('[name=turnnum]').val(), cnum=5;//$('[name=coinnum]').val();
-      console.log(cnum);
         alert((Number(tnum)-1)*10+"枚以下のプレイヤーは失格になります");
         // playgame(pnum,tnum);
         gstart(pnum,tnum,1);
@@ -129,7 +128,7 @@
         });
       }
       ////////////////////
-      var num=0;
+      var num=0,timer1;
       function stax(np){
         var sn="intax"+String(np);
         document.write('<div id='+np+' style="margin:10px;">プレイヤー'+Number(np+1)+': <select name='+sn+'>');
@@ -150,14 +149,22 @@
           alert("このウィンドウを閉じた後、\n別のプレイヤーに交代してください");
           // return $("[name="+sn+"]").val();
           num++;
+          console.log("num:"+num);
           return 1;
         });
       }
+      function numcheck(pnum){
+        if (num==pnum) {
+          alert('ターン終了です\n納税数表示に移るので、全員が画面を見れるようにしてください');
+          clearInterval(timer1);
+          return;
+        }
+      }
       function gstart(pnum,tnum,nturn){
-        document.write('<div style="background-color:silver; width:380px;height:600px;margin:0px;position:relative;">');
-        document.write('<h1 style="text-align:center;width:100%;background-color:rgba(255, 255, 255, 0.5);">投資'+nturn+'ターン目</h1>');
+        document.write('<div style="background-color:white; width:380px;height:600px;border:black 1px solid;">');
+        document.write('<h1 style="text-align:center;width:100%;background-color:rgba(115, 240, 124, 0.5);">投資'+nturn+'ターン目</h1>');
         document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br>');
-        document.write('一度決定を押すと取り消せないので注意<br>');
+        document.write('<strong><font style="color:red;">一度決定を押すと取り消せないので注意!</font></strong><br>');
         for(var np=0;np<pnum;np++){
           if(nturn==1){totalnum[np]=0;}
           stax(np);
@@ -166,8 +173,7 @@
           // totalnum[np]+=5-addtax;//私財に横領
           // alert("次のプレイヤーに交代してください");
         }
-        console.log("num"+num);
-        if(num==pnum)alert("次のターンになります");
+        timer1=setInterval("numcheck(pnum)",1000);
         document.write('</div>');
       }
     </script>
