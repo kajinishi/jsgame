@@ -1,0 +1,144 @@
+<!-- 元ファイル -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>投資ターン</title>
+  <!-- ↓ファイルの読み取り -->
+    <!-- ↓p5.js関連 -->
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.js"></script>
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.dom.js"></script>
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.sound.js"></script>
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.speech.js"></script>
+    <!-- ↑p5.js関連 -->
+  <script type="text/javascript" src="js/libraries/jquery-3.2.1.min.js"></script>
+  <!-- <script language="javascript" type="text/javascript" src="js/main.js"></script> -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <!-- ↑ファイルの読み取り -->
+  <style>
+    body{
+      margin:0;padding:0;background-color: rgb(126, 204, 94);
+      font-family: "游ゴシック", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "ＭＳ ゴシック", sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    var pnum,cnum=5,turnnum, hadsed="false";
+    var nowturn=Number(1),nowplay=Number(0);
+    var intax=[], inmine=[], totalnum=[],taxtotal=0;
+  </script>
+  <div style="background-color:silver; width:320px;height:640px;margin:0px;position:relative;">
+    <div id="investturn">
+      <script>
+        document.write('<h1 style="text-align:center;width:100%;background-color:rgba(255, 255, 255, 0.5);">投資'+nowturn+'ターン目</h1>');
+        document.write('<h2 style="text-align:center;background-color:rgba(252, 242, 0, 0.5);margin:0px;">プレイヤー:'+Number(nowplay+1)+'人目</h2>');
+        document.write();
+        console.log("nowplay="+nowplay);
+      </script>
+      <!-- <a style="position:absolute;top:60%;left:30%;display:block;" class="btn" href="invest.html">Tap To Start!</a> -->
+      <img src="image/私財.png" alt="No image" style="position:absolute;top:60%;left:3%;" width="40%">
+      <div class="balloonl" style="position:absolute;top:35%;right:20%">画像をタップ！</div>
+      <img src="image/税金.png" alt="No image" style="position:absolute;top:30%;left:10%;" width="27%" onclick="invest();">
+    </div>
+    <script>
+      function taxselect(){
+        document.write('<select name="intaxnum">');
+            var def=Number(Math.round(Math.random()*Number(cnum)));//0~cnum
+            console.log("def="+def+",cnum="+cnum);
+            for(var i=0;i<=cnum;i++){
+              var defu="";
+              if(def==i){defu=" selected";}
+              document.write('<option value='+Number(i)+defu+'>'+i+'</option>');
+            }
+        document.write('</select>枚<br>');
+      }
+      function invest(){
+        $("#investing").fadeIn();
+        /*<!-- ↓投資の枚数 -->
+        document.write('<div style="background-color:rgb(44, 157, 172);height:150px;padding:5px;top:40%;position:absolute;>"');
+          document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br>');
+          taxselect();
+          document.write('<div class="btn" style="left:30%;position:absolute;margin:10px;">決定</div><br>');
+        document.write('</div>');
+        //<!-- ↑投資の枚数 -->*/
+      }
+    </script>
+    <!-- ↓遊ぶ前の設定 -->
+    <div style="background-color:orange;height:150px;padding:5px;top:40%;left:20%;position:absolute;" id="playset">
+      ①何人で遊ぶ？
+      <select name="playnum">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+      </select>人<br>
+      ②何ターン？
+      <select name="turnnum">
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5" selected>5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+      </select>ターン<br>
+      <!-- ①コインは何枚？
+      <select name="coinnum">
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5" selected>5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+      </select>枚<br> -->
+      <div class="btn" style="left:30%;position:absolute;margin:10px;" onclick="startcheck();">決定</div><br>
+
+    </div>
+    <!-- ↑遊ぶ前の設定 -->
+    <!-- ↓投資の枚数 -->
+    <div style="background-color:rgb(44, 157, 172);height:150px;padding:5px;top:40%;position:absolute;" id="investing">
+      何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br>
+      <!-- <div class="btn" style="left:30%;position:absolute;margin:10px;" onclick="taxselect();">選択</div><br> -->
+      <!-- <script>taxselect();</script> -->
+      <script>
+      document.write('<select name="intaxnum">');
+          var def=Number(Math.round(Math.random()*Number(cnum)));//0~cnum
+          console.log("def="+def+",cnum="+cnum);
+          for(var i=0;i<=cnum;i++){
+            var defu="";
+            if(def==i){defu=" selected";}
+            document.write('<option value='+Number(i)+defu+'>'+i+'</option>');
+          }
+      document.write('</select>枚<br>');
+      </script>
+      <div class="btn" style="left:30%;position:absolute;margin:10px;" onclick="investend($('[name=intaxnum]').val());">決定</div><br>
+    </div>
+    <!-- ↑投資の枚数 -->
+    <script>
+    $("#investturn").hide();
+    $("#investing").hide();
+    function startcheck(){
+      pnum=$('[name=playnum]').val(), tnum=$('[name=turnnum]').val(), cnum=5;//$('[name=coinnum]').val();
+      console.log(cnum);
+        alert((Number(tnum)-1)*10+"枚以下のプレイヤーは失格になります");
+        $("#playset").fadeOut();
+        $("#investturn").fadeIn();
+    }
+    function investend(income){
+      taxtotal+=income;
+      if(nowturn==0){totalnum[nowplay]=0;}
+      totalnum[nowplay]+=5-income;
+      alert("次のプレイヤーに交代してください");
+      nowplay++;
+      $("#investing").fadeOut();
+      $("#investturn").fadeOut().fadeIn();
+    }
+    </script>
+
+  </div>
+
+</body>
+</html>

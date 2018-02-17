@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>function</title>
+  <!-- ↓ファイルの読み取り -->
+    <!-- ↓p5.js関連 -->
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.js"></script>
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.dom.js"></script>
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.sound.js"></script>
+  <script language="javascript" type="text/javascript" src="js/libraries/p5.speech.js"></script>
+    <!-- ↑p5.js関連 -->
+  <script type="text/javascript" src="js/libraries/jquery-3.2.1.min.js"></script>
+  <!-- <script language="javascript" type="text/javascript" src="js/main.js"></script> -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <!-- ↑ファイルの読み取り -->
+  <style>
+    body{
+      margin:0;padding:0;background-color: rgb(126, 204, 94);
+      font-family: "游ゴシック", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "ＭＳ ゴシック", sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    var pnum,cnum=5,turnnum, hadsed="false";
+    var nowturn=Number(1),nowplay=Number(0);
+    var intax=[], inmine=[], totalnum=[],taxtotal=0;
+  </script>
+  <div style="background-color:silver; width:320px;height:640px;margin:0px;position:relative;">
+    <!-- ↓遊ぶ前の設定 -->
+    <div style="background-color:orange;height:150px;padding:5px;top:40%;left:20%;position:absolute;" id="playset">
+      ①何人で遊ぶ？
+      <select name="playnum">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+      </select>人<br>
+      ②何ターン？
+      <select name="turnnum">
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5" selected>5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+      </select>ターン<br>
+      <div class="btn" style="left:30%;position:absolute;margin:10px;" onclick="startcheck();">決定</div><br>
+    </div>
+    <!-- ↑遊ぶ前の設定 -->
+    <script>
+    var selected="false";
+    function startcheck(){
+      pnum=$('[name=playnum]').val(), tnum=$('[name=turnnum]').val(), cnum=5;//$('[name=coinnum]').val();
+      console.log(cnum);
+        alert((Number(tnum)-1)*10+"枚以下のプレイヤーは失格になります");
+        // playgame(pnum,tnum);
+        gstart(pnum,tnum,1);
+    }
+      function invested(addnum,nplay){//枚数決定
+        taxtotal+=addnum;//税金の枚数足す
+        totalnum[nplay]+=5-addnum;//私財に横領
+        selected="true";
+      }
+      function invest(nplay){//枚数決める
+        document.write('<div style="background-color:rgb(44, 157, 172);height:150px;padding:5px;top:40%;position:absolute;" id="investing">');
+          document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br>');
+          document.write('<select name="intaxnum">');
+              var def=Number(Math.round(Math.random()*Number(5)));//0~5
+              console.log("def="+def);
+              for(var i=0;i<=5;i++){
+                var defu="";
+                if(def==i){defu=" selected";}
+                document.write('<option value='+Number(i)+defu+'>'+i+'</option>');
+              }
+          document.write('</select>枚<br>');
+          var intn="[name=intaxnum]";
+          document.write('<div class="btn" style="left:30%;position:absolute;margin:10px;" onclick="investend($("+intn+").val(),nplay);">決定</div><br>');
+        document.write('</div>');
+      }
+      function playgame(pnum,tnum){
+        for(var nturn=1;nturn<=tnum;nturn++){//ターン
+          for(var nplay=0;nplay<pnum;nplay++){//プレイヤー
+            if(nturn==1){totalnum[nplay]=0;}//1ターン目なら総コイン数0枚
+            var selected="false",time=0;
+            while(selected=="false"){
+              document.write('<h1 style="text-align:center;width:100%;background-color:rgba(255, 255, 255, 0.5);">投資'+nturn+'ターン目</h1>');
+              document.write('<h2 style="text-align:center;background-color:rgba(252, 242, 0, 0.5);margin:0px;">プレイヤー:'+Number(nplay+1)+'人目</h2>');
+              //画像表示
+              document.write('<img src="image/私財.png" alt="No image" style="position:absolute;top:60%;left:3%;" width="40%">');
+              document.write('<div class="balloonl" style="position:absolute;top:35%;right:20%">画像をタップ！</div>');
+              document.write('<img src="image/税金.png" alt="No image" style="position:absolute;top:30%;left:10%;" width="27%" onclick="invest(nplay);">');
+
+              console.log(time++);
+            }
+
+            alert("次のプレイヤーに交代してください");
+          }//↑プレイヤー
+          taxtotal=0;
+          //合議？
+        }
+        //結果発表
+      }
+
+      ///////////////////////////
+      function selecttax(np){
+        document.write('<div style="background-color:rgb(44, 157, 172);height:150px;padding:5px;top:40%;position:absolute;" id="investing">');
+        document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br><br>');
+        document.write('<select name="intaxnum">');
+            var def=Number(Math.round(Math.random()*Number(5)));//0~5
+            console.log("def="+def);
+            for(var i=0;i<=5;i++){
+              var defu="";
+              if(def==i){defu=" selected";}
+              document.write('<option value='+Number(i)+defu+'>'+i+'</option>');
+            }
+        document.write('</select>枚納税<br>');
+        // var intn="[name=intaxnum]";
+        document.write('<div class="btn"  id="decide">決定</div>');
+        document.write('</div>');
+        $("#decide").click(function(){
+          return $("[name=intaxnum]").val();
+        });
+      }
+      ////////////////////
+      var num=0;
+      function stax(np){
+        var sn="intax"+String(np);
+        document.write('<div id='+np+' >プレイヤー'+Number(np+1)+': <select name='+sn+'>');
+            var def=Number(Math.round(Math.random()*Number(5)));//0~5
+            for(var i=0;i<=5;i++){
+              var defu="";
+              if(def==i){defu=" selected";}
+              document.write('<option value='+Number(i)+defu+'>'+i+'</option>');
+            }
+        document.write('</select>枚納税');
+        //↑表示
+        document.write('<font class="btn" id="decide'+np+'">決定</font></div>');
+        $("#decide"+np).click(function(){
+          $("#"+np).hide();
+          console.log(np+"番目:"+$("[name="+sn+"]").val());
+          taxtotal+=$("[name="+sn+"]").val();//税金の枚数足す
+          totalnum[np]+=5-$("[name="+sn+"]").val();//私財に横領
+          alert("別のプレイヤーに交代してください");
+          // return $("[name="+sn+"]").val();
+          num++;
+          return 1;
+        });
+      }
+      function gstart(pnum,tnum,nturn){
+        document.write('<div style="background-color:silver; width:320px;height:640px;margin:0px;position:relative;">');
+        document.write('<h1 style="text-align:center;width:100%;background-color:rgba(255, 255, 255, 0.5);">投資'+nturn+'ターン目</h1>');
+        document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br><br>');
+        for(var np=0;np<=pnum;np++){
+          if(nturn==1){totalnum[np]=0;}
+          stax(np);
+          // var addtax=selecttax(np);
+          // taxtotal+=addtax;//税金の枚数足す
+          // totalnum[np]+=5-addtax;//私財に横領
+          // alert("次のプレイヤーに交代してください");
+        }
+        console.log("num"+num);
+        if(num==pnum)alert("次のターンになります");
+        document.write('</div>');
+      }
+    </script>
+
+  </div>
+
+</body>
+</html>
