@@ -60,13 +60,12 @@
       pnum=$('[name=playnum]').val(), tnum=$('[name=turnnum]').val(), cnum=5;//$('[name=coinnum]').val();
         alert((Number(tnum)-1)*10+"枚以下のプレイヤーは失格になります");
         // playgame(pnum,tnum);
-        gstart(pnum,tnum,1);
+        gstart(pnum,tnum);
     }
-
       var num=0,timer1;
       function stax(np){
-        var sn="intax"+String(np);
-        document.write('<div id='+np+' style="margin:10px;">プレイヤー'+Number(np+1)+': <select name='+sn+'>');
+        var sn="intax"+String(np)+"of"+String(nowturn);
+        document.write('<div class='+np+' style="margin:10px;">プレイヤー'+Number(np+1)+': <select name='+sn+'>');
             var def=Number(Math.round(Math.random()*Number(5)));//0~5
             for(var i=0;i<=5;i++){
               var defu="";
@@ -75,9 +74,9 @@
             }
         document.write('</select>枚納税');
         //↑表示
-        document.write('<font style="background: #51cc4a;color:black;border-radius:4px;margin:10px;padding:3px;" id="decide'+np+'">決定</font></div>');
-        $("#decide"+np).click(function(){
-          $("#"+np).hide();
+        document.write('<font style="background: #51cc4a;color:black;border-radius:4px;margin:10px;padding:3px;" class="decide'+np+'" >決定</font></div>');
+        $(".decide"+np).click(function(){
+          $("."+np).hide();
           console.log(np+"番目:"+$("[name="+sn+"]").val());/////////////
           taxtotal+=Number($("[name="+sn+"]").val());//税金の枚数足す
           totalnum[np]+=Number(5-Number($("[name="+sn+"]").val()));//私財に横領
@@ -88,31 +87,55 @@
           return 1;
         });
       }
-      function numcheck(pnum,tnum,nturn){
-        console.log("numcheck呼び出された,nturn="+nturn);///////
+      function result(pnum){
+        var resn=[],resp=[],maxn=0,over=Number(64*5+1),maxp=0;
+        var string="";
+        for(var i=0;i<pnum;i++){
+          for(var j=0;j<pnum;j++){
+            if(totalnum[j]>maxn && totalnum[j]<over){maxn=totalnum[j];maxp=j;}
+          }
+          resn[i]=maxn;resp[i]=maxp;over=maxn;
+          string=string+Number(i+1)+"位→ "+"プレイヤー"+Number(Number(maxp)+1)+": 合計"+maxn;
+          if(totalnum[maxp]<=(Number(tnum)-1)*10){string=string+" ←失格です"};
+          string=string+"\n";
+          maxn=0;
+        }
+
+        alert("結果発表\n"+string);
+      }
+      function numcheck(pnum,tnum){
+        console.log("numcheck呼び出された");///////
         if (num==pnum) {
-          alert(Number(nturn)+'ターン終了です\n納税数表示に移るので、全員が画面を見れるようにしてください');
+          num=0;
+          alert(Number(nowturn)+'ターン終了です\n納税数表示に移るので、全員が画面を見れるようにしてください');
           clearInterval(timer1);
-          document.write('<div style="background-color:rgb(226, 242, 93);position:absolute;top:40%;left:15%;padding:5px;">');
-          document.write("納税総合計:"+Number(taxtotal)+" :(脱税数"+Number(5*Number(pnum)-Number(taxtotal))+"枚)<br>");
-          document.write('取り分はひとり'+Number(Number(taxtotal)*2/Number(pnum))+"です");
-          document.write('</div>');
-          var damy=Number(Number(nturn)+1);console.log("damy="+damy);///////
-          document.write('<div style="background:rgb(255, 107, 0);border-radius:5px;margin:10px;padding:10px;position:absolute;top:60%;left:20%" onclick="gstart(pnum,tnum,Number(damy))">次のターンへ</div>');
-          return;
+          // console.log(nowturn+"ターン");
+          // document.write(taxtotal+"枚納税");
+          // document.write('<div style="background-color:rgb(226, 242, 93);position:absolute;top:40%;left:15%;padding:5px;">');
+          // document.write("納税総合計:"+Number(taxtotal)+" :(脱税数"+Number(5*Number(pnum)-Number(taxtotal))+"枚)<br>");
+          // document.write('取り分はひとり'+Number(Number(taxtotal)*2/Number(pnum))+"です");
+          // document.write('</div>');
+          console.log(taxtotal+"枚納税");
+          alert("納税総合計:"+Number(taxtotal)+" :(脱税数"+Number(5*Number(pnum)-Number(taxtotal))+"枚)"+'\n取り分はひとり'+Number(Number(taxtotal)*2/Number(pnum))+"です");
+          for(var i=0;i<pnum;i++)totalnum[i]+=Number(Number(taxtotal)*2/Number(pnum));
+          nowturn=Number(Number(nowturn)+Number(1));taxtotal=0;
+          if(nowturn<=tnum){alert("下にスクロールしてください");gstart(pnum,tnum);}
+          else result(pnum);
+          // document.write('<div style="background:rgb(255, 107, 0);border-radius:5px;margin:10px;padding:10px;position:absolute;top:60%;left:20%" onclick="gstart(pnum,tnum)">次のターンへ</div>');
+
         }
       }
-      function gstart(pnum,tnum,nturn){
-        document.write('<div style="background-color:white; width:380px;height:600px;border:black 1px solid;">');
-        document.write('<h1 style="text-align:center;width:100%;background-color:rgba(115, 240, 124, 0.5);">投資'+nturn+'ターン目</h1>');
+      function gstart(pnum,tnum){
+        document.write('<div style="background-color:white; width:380px;height:600px;border:black 1px solid;position:relative;">');
+        document.write('<h1 style="text-align:center;width:100%;background-color:rgba(115, 240, 124, 0.5);">投資'+nowturn+'ターン目</h1>');
         document.write('所持数は5枚<br>何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして横領分が分からないようにしてます</strong><br>');
         document.write('<strong><font style="color:red;">一度決定を押すと取り消せないので注意!</font></strong><br>');
         for(var np=0;np<pnum;np++){
-          if(nturn==1){totalnum[np]=0;}
+          if(nowturn==1){totalnum[np]=0;}
           stax(np);
         }
         console.log("pnum="+pnum);///////////
-        timer1=setInterval(numcheck,1000,pnum,tnum,nturn);
+        timer1=setInterval(numcheck,1000,pnum,tnum);
         document.write('</div>');
       }
     </script>
