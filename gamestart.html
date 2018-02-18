@@ -62,72 +62,7 @@
         // playgame(pnum,tnum);
         gstart(pnum,tnum,1);
     }
-      function invested(addnum,nplay){//枚数決定
-        taxtotal+=addnum;//税金の枚数足す
-        totalnum[nplay]+=5-addnum;//私財に横領
-        selected="true";
-      }
-      function invest(nplay){//枚数決める
-        document.write('<div style="background-color:rgb(44, 157, 172);height:150px;padding:5px;top:40%;position:absolute;" id="investing">');
-          document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br>');
-          document.write('<select name="intaxnum">');
-              var def=Number(Math.round(Math.random()*Number(5)));//0~5
-              console.log("def="+def);
-              for(var i=0;i<=5;i++){
-                var defu="";
-                if(def==i){defu=" selected";}
-                document.write('<option value='+Number(i)+defu+'>'+i+'</option>');
-              }
-          document.write('</select>枚<br>');
-          var intn="[name=intaxnum]";
-          document.write('<div class="btn" style="left:30%;position:absolute;margin:10px;" onclick="investend($("+intn+").val(),nplay);">決定</div><br>');
-        document.write('</div>');
-      }
-      function playgame(pnum,tnum){
-        for(var nturn=1;nturn<=tnum;nturn++){//ターン
-          for(var nplay=0;nplay<pnum;nplay++){//プレイヤー
-            if(nturn==1){totalnum[nplay]=0;}//1ターン目なら総コイン数0枚
-            var selected="false",time=0;
-            while(selected=="false"){
-              document.write('<h1 style="text-align:center;width:100%;background-color:rgba(255, 255, 255, 0.5);">投資'+nturn+'ターン目</h1>');
-              document.write('<h2 style="text-align:center;background-color:rgba(252, 242, 0, 0.5);margin:0px;">プレイヤー:'+Number(nplay+1)+'人目</h2>');
-              //画像表示
-              document.write('<img src="image/私財.png" alt="No image" style="position:absolute;top:60%;left:3%;" width="40%">');
-              document.write('<div class="balloonl" style="position:absolute;top:35%;right:20%">画像をタップ！</div>');
-              document.write('<img src="image/税金.png" alt="No image" style="position:absolute;top:30%;left:10%;" width="27%" onclick="invest(nplay);">');
 
-              console.log(time++);
-            }
-
-            alert("次のプレイヤーに交代してください");
-          }//↑プレイヤー
-          taxtotal=0;
-          //合議？
-        }
-        //結果発表
-      }
-
-      ///////////////////////////
-      function selecttax(np){
-        document.write('<div style="background-color:rgb(44, 157, 172);height:150px;padding:5px;top:40%;position:absolute;" id="investing">');
-        document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br><br>');
-        document.write('<select name="intaxnum">');
-            var def=Number(Math.round(Math.random()*Number(5)));//0~5
-            console.log("def="+def);
-            for(var i=0;i<=5;i++){
-              var defu="";
-              if(def==i){defu=" selected";}
-              document.write('<option value='+Number(i)+defu+'>'+i+'</option>');
-            }
-        document.write('</select>枚納税<br>');
-        // var intn="[name=intaxnum]";
-        document.write('<div class="btn"  id="decide">決定</div>');
-        document.write('</div>');
-        $("#decide").click(function(){
-          return $("[name=intaxnum]").val();
-        });
-      }
-      ////////////////////
       var num=0,timer1;
       function stax(np){
         var sn="intax"+String(np);
@@ -143,37 +78,41 @@
         document.write('<font style="background: #51cc4a;color:black;border-radius:4px;margin:10px;padding:3px;" id="decide'+np+'">決定</font></div>');
         $("#decide"+np).click(function(){
           $("#"+np).hide();
-          console.log(np+"番目:"+$("[name="+sn+"]").val());
-          taxtotal+=$("[name="+sn+"]").val();//税金の枚数足す
-          totalnum[np]+=5-$("[name="+sn+"]").val();//私財に横領
+          console.log(np+"番目:"+$("[name="+sn+"]").val());/////////////
+          taxtotal+=Number($("[name="+sn+"]").val());//税金の枚数足す
+          totalnum[np]+=Number(5-Number($("[name="+sn+"]").val()));//私財に横領
           alert("このウィンドウを閉じた後、\n別のプレイヤーに交代してください");
           // return $("[name="+sn+"]").val();
           num++;
-          console.log("num:"+num);
+          console.log("num:"+num);/////////////
           return 1;
         });
       }
-      function numcheck(pnum){
+      function numcheck(pnum,tnum,nturn){
+        console.log("numcheck呼び出された,nturn="+nturn);///////
         if (num==pnum) {
-          alert('ターン終了です\n納税数表示に移るので、全員が画面を見れるようにしてください');
+          alert(Number(nturn)+'ターン終了です\n納税数表示に移るので、全員が画面を見れるようにしてください');
           clearInterval(timer1);
+          document.write('<div style="background-color:rgb(226, 242, 93);position:absolute;top:40%;left:15%;padding:5px;">');
+          document.write("納税総合計:"+Number(taxtotal)+" :(脱税数"+Number(5*Number(pnum)-Number(taxtotal))+"枚)<br>");
+          document.write('取り分はひとり'+Number(Number(taxtotal)*2/Number(pnum))+"です");
+          document.write('</div>');
+          var damy=Number(Number(nturn)+1);console.log("damy="+damy);///////
+          document.write('<div style="background:rgb(255, 107, 0);border-radius:5px;margin:10px;padding:10px;position:absolute;top:60%;left:20%" onclick="gstart(pnum,tnum,Number(damy))">次のターンへ</div>');
           return;
         }
       }
       function gstart(pnum,tnum,nturn){
         document.write('<div style="background-color:white; width:380px;height:600px;border:black 1px solid;">');
         document.write('<h1 style="text-align:center;width:100%;background-color:rgba(115, 240, 124, 0.5);">投資'+nturn+'ターン目</h1>');
-        document.write('何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして<br>横領分が分からないようにしてます</strong><br>');
+        document.write('所持数は5枚<br>何枚納税する？ (納税しなかった分は横領)<br><strong>デフォルトをランダムにして横領分が分からないようにしてます</strong><br>');
         document.write('<strong><font style="color:red;">一度決定を押すと取り消せないので注意!</font></strong><br>');
         for(var np=0;np<pnum;np++){
           if(nturn==1){totalnum[np]=0;}
           stax(np);
-          // var addtax=selecttax(np);
-          // taxtotal+=addtax;//税金の枚数足す
-          // totalnum[np]+=5-addtax;//私財に横領
-          // alert("次のプレイヤーに交代してください");
         }
-        timer1=setInterval("numcheck(pnum)",1000);
+        console.log("pnum="+pnum);///////////
+        timer1=setInterval(numcheck,1000,pnum,tnum,nturn);
         document.write('</div>');
       }
     </script>
