@@ -90,15 +90,16 @@
       function result(pnum){
         var resn=[],resp=[],maxn=0,over=Number(64*5+1),maxp=0;
         var string="";
+        var done=[];
         for(var i=0;i<pnum;i++){
           for(var j=0;j<pnum;j++){
-            if(totalnum[j]>maxn && totalnum[j]<over){maxn=totalnum[j];maxp=j;}
+            if(totalnum[j]>maxn && done[j]!=1){maxn=totalnum[j];maxp=j;}
           }
           resn[i]=maxn;resp[i]=maxp;over=maxn;
           string=string+Number(i+1)+"位→ "+"プレイヤー"+Number(Number(maxp)+1)+": 合計"+maxn;
           if(totalnum[maxp]<=(Number(tnum)-1)*10){string=string+" ←失格です"};
           string=string+"\n";
-          maxn=0;
+          maxn=0; done[maxp]=1;
         }
 
         alert("結果発表\n"+string);
